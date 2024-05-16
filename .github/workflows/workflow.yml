@@ -1,4 +1,4 @@
-name: React CD
+name: React CI
 
 on:
   push:
@@ -10,23 +10,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - name: Checkout Repo
+        uses: actions/checkout@master
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '15.x'
+      - name: Install Dependencies
+        run: npm install
 
-      - name: Install AWS CLI
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y awscli
-          aws --version
-
-      - name: Deploy to AWS S3
-        run: |
-          aws s3 sync ./build s3://abrar-s3-bucket --delete
+      - name: Build
+        run: npm run build
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          CI: false
+          REACT_APP_NODE_ENV: development
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Copy files to the AWS S3 bucket
+        run: |
+          aws s3 sync --acl public-read --delete build s3://${{ secrets.S3_BUCKET_NAME }}
