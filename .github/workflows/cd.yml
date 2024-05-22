@@ -1,0 +1,23 @@
+name: CD Pipeline
+
+on:
+  workflow_run:
+    workflows: ["CI Pipeline"]
+    types:
+      - completed
+
+jobs:
+
+  build:
+
+    runs-on: self-hosted
+
+    steps:
+      - name: Pull Docker Image
+        run: sudo docker pull taukirattar/taukirapp
+
+      - name: Delete old docker container
+        run: sudo docker rm -f taukirapp-container || true
+
+      - name: Run Docker Container
+        run: sudo docker run -d -p 8080:8080 --name taukirapp-container taukirattar/taukirapp
