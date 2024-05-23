@@ -1,19 +1,26 @@
-# Fetching the latest node image on alpine linux
-FROM node:alpine AS development
+# Use an official node image as the base image
+FROM node:14-alpine
 
-#  Declaring env
-ENV NODE_ENV development
+# Set the working directory
+WORKDIR /app
 
-# Setting up the work directory
-WORKDIR /react-app
+# Copy package.json and package-lock.json to the working directory
+COPY package*.json ./
 
-# Installing dependencies
-COPY ./package*.json /react-app
-
+# Install dependencies
 RUN npm install
 
-# Copying all the files in our project
+# Copy the rest of the application code to the working directory
 COPY . .
 
-# Starting our application
-CMD ["npm","start"]
+# Build the React app
+RUN npm run build
+
+# Use a lightweight web server to serve the React app
+RUN npm install -g serve
+
+# Expose the port the app runs on
+EXPOSE 5000
+
+# Command to run the app
+CMD ["serve", "-s", "build", "-l", "5000"]
