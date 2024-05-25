@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         DOCKER_CREDENTIALS_ID = 'docker-hub-credentials' // Your Docker Hub credentials ID
-        IMAGE_NAME = 'your-docker-username/your-image-name'
+        IMAGE_NAME = 'taukirattar/taukirapp'
         AWS_CREDENTIALS_ID = 'aws-credentials' // Your AWS credentials ID
         EC2_INSTANCE_IP = 'your-ec2-instance-ip'
         SSH_PRIVATE_KEY = 'ssh-private-key-id' // Your SSH private key ID in Jenkins
