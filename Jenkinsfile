@@ -33,10 +33,10 @@ pipeline {
                     sshagent(credentials: [SSH_PRIVATE_KEY]) {
                         sh """
                         ssh -o StrictHostKeyChecking=no ubuntu@${EC2_INSTANCE_IP} '
-                        docker pull ${IMAGE_NAME}:latest &&
-                        docker stop react-app || true &&
-                        docker rm react-app || true &&
-                        docker run -d --name react-app -p 80:8081 ${IMAGE_NAME}:latest
+                        sudo docker pull ${IMAGE_NAME}:latest &&
+                        sudo docker stop react-app || true &&
+                        sudo docker rm react-app || true &&
+                        sudo docker run -d --name react-app -p 8081:80 ${IMAGE_NAME}:latest
                         '
                         """
                     }
